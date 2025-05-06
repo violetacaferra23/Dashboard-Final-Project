@@ -87,4 +87,4 @@ Advertising spend shifted to economy vehicles in downturns
 2008 recession had most severe impact on executive cars
 
 
-** Developed as final project for Coursera's Data Visualization with Python course - IBM Professional Certificate
+** Developed as final project for Coursera's Data Visualization with Python course - IBM Professional Certificate **
