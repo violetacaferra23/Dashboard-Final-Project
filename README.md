@@ -1,8 +1,8 @@
 # 📊 Automobile Sales Dashboard - Final Project
 
-Course: Data Visualization with Python (IBM/Coursera)
+* Course: Data Visualization with Python (IBM/Coursera)
 
-Objective: Analyze historical automobile sales trends during recession periods and demonstrate dashboarding skills using Python.
+* Objective: Analyze historical automobile sales trends during recession periods and demonstrate dashboarding skills using Python.
 
 
 ## 🚀 Project Overview
@@ -44,7 +44,7 @@ Python + Dash + Plotly + Pandas
 
 ## 🛠️ Technical Implementation
 
-## python
+## Python
 
 ### Core libraries
 import dash
