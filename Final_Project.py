@@ -117,9 +117,16 @@ def update_select_year_disabled(selected_statistics):
     else:
         return False  # Habilitar
 
+# Common settings for all charts
+COMMON_LAYOUT = {
+    'title': {'x': 0.5, 'font': {'size': 20}},
+    'plot_bgcolor': '#ffffff',
+    'paper_bgcolor': '#ffffff',
+    'font': {'family': 'Poppins', 'color': '#2c3e50'},
+    'hovermode': 'x unified'
+}
 
-#Callback for plotting
-# Define the callback function to update the input container based on the selected statistics
+# Callback
 @app.callback(
     Output('output-container', 'children'),
     [Input('dropdown-statistics', 'value'),
@@ -128,14 +135,9 @@ def update_select_year_disabled(selected_statistics):
 def update_output_container(selected_statistics, selected_year):
     if selected_statistics == 'Recession Period Statistics':
         recession_data = data[data['Recession'] == 1]
-
-        # Define all necessary variables
+        
+        # Chart 1: Trend during recession 
         yearly_rec = recession_data.groupby('Year')['Automobile_Sales'].mean().reset_index()
-        average_sales = recession_data.groupby('Vehicle_Type')['Automobile_Sales'].mean().reset_index()
-        exp_data = recession_data.groupby('Vehicle_Type')['Advertising_Expenditure'].sum().reset_index()
-        unemp_data = recession_data.groupby(['Vehicle_Type', 'Year'])['Automobile_Sales'].mean().reset_index()
-
-        # Create and display graphs for Recession Report Statistics
         fig1 = px.line(
             yearly_rec, 
             x='Year', 
@@ -143,121 +145,176 @@ def update_output_container(selected_statistics, selected_year):
             title="<b>Automobile Sales Trend During Recession</b>",
             color_discrete_sequence=['#FF6B6B']
         )
-        fig1.update_layout(
-            hovermode='x unified',
-            title_font=dict(size=20),
-            xaxis_title="",
-            yaxis_title="Sales Volume",
-            height=400
-        )
+        fig1.update_layout(**COMMON_LAYOUT, height=400)
         fig1.update_traces(line_width=3, hovertemplate='%{y:,.0f} units')
+
+        # Chart 2: Avg sales by vehicle type
+        average_sales = recession_data.groupby('Vehicle_Type')['Automobile_Sales'].mean().reset_index()
         fig2 = px.bar(
             average_sales, 
             x='Vehicle_Type', 
             y='Automobile_Sales',
             title="<b>Average Sales by Vehicle Type</b>",
             color='Vehicle_Type',
-            color_discrete_sequence=px.colors.qualitative.Pastel
+            color_discrete_sequence=px.colors.qualitative.Pastel,
         )
         fig2.update_layout(
+            **COMMON_LAYOUT,
             showlegend=False,
-            xaxis_title="",
-            yaxis_title="Average Sales",
-            height=400
+            height=400,
+            yaxis_title="Sales Volume (units)"
         )
-        fig2.update_traces(hovertemplate='%{y:,.0f} units')
+        fig2.update_traces(
+            hovertemplate='%{y:,.0f} units',
+            texttemplate='%{y:,.0f}',
+            textposition='outside',
+            textfont_size=12
+        )
+
+        # Chart 3: 3D Pie Chart
+        exp_data = recession_data.groupby('Vehicle_Type')['Advertising_Expenditure'].sum().reset_index()
         fig3 = px.pie(
-            exp_data, 
-            values='Advertising_Expenditure', 
+            exp_data,
+            values='Advertising_Expenditure',
             names='Vehicle_Type',
-            title="<b>Marketing Budget Allocation</b>",
-            hole=0.4,
+            title="<b>Advertising Expenditure by vehicle </b>",
+            hole=0.3,
             color_discrete_sequence=px.colors.qualitative.Pastel
         )
-        fig3.update_layout(
-            uniformtext_minsize=12,
-            uniformtext_mode='hide',
-            height=400
-        )
+        fig3.update_layout(**COMMON_LAYOUT, height=400)
         fig3.update_traces(
-            textposition='inside', 
+            textposition='inside',
             textinfo='percent+label',
-            hovertemplate='%{label}: $%{value:,.0f}'
+            hovertemplate='%{label}: $%{value:,.0f}',
+            pull=[0, 0, 0, 0],  # Efecto 3D
+            rotation=45,
+            marker=dict(line=dict(color='#ffffff', width=1))
         )
+
+        # Chart 4: Unemployment Rate Effect (Stacked Bars)
+        unemp_data = recession_data.groupby(['Vehicle_Type', 'Year'])['Automobile_Sales'].mean().reset_index()
         fig4 = px.bar(
-            unemp_data, 
-            x='Year',         
-            y='Automobile_Sales', 
+            unemp_data,
+            x='Year',
+            y='Automobile_Sales',
             color='Vehicle_Type',
-            title="<b>Unemployment Rate Effect on Automobile Sales</b>",
-            color_discrete_sequence=['#3498db', '#2ecc71', '#e74c3c', '#f39c12', '#9b59b6'],
-            labels={'Automobile_Sales': 'Sales Volume (units)', 'Year': 'Recession Period'},
+            title="<b>Unemployment Rate Effect (Stacked)</b>",
+            color_discrete_sequence=['#3498db', '#2ecc71', '#e74c3c', '#f39c12'],  # Colores personalizados
+            barmode='stack', 
             height=450
         )
         fig4.update_layout(
-            plot_bgcolor='rgba(0,0,0,0)',
-            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='#ffffff',
+            paper_bgcolor='#ffffff',
             font=dict(family="Poppins", color='#2c3e50'),
             title={
-                'text': "<b>Unemployment Rate Effect on Automobile Sales</b>",
-                'y': 0.95,
-                'x': 0.5,
+                'text': "<b>Unemployment Rate Effect (Stacked View)</b>",
+                'y':0.95,
+                'x':0.5,
                 'xanchor': 'center',
                 'font': {'size': 18}
             },
             xaxis=dict(
                 showline=True,
                 linecolor='#bdc3c7',
-                tickangle=45
+                tickangle=45 
             ),
             yaxis=dict(
                 showgrid=True,
                 gridcolor='#ecf0f1',
                 showline=True,
                 linecolor='#bdc3c7'
-            )
+            ),
+            legend=dict(
+                title_text='Vehicle Type',
+                orientation='h',
+                yanchor='bottom',
+                y=-0.5,  
+                xanchor='center',
+                x=0.5
+            ),
+            margin=dict(l=50, r=50, t=80, b=120),  # Ajuste clave para el espacio
+            hovermode='x unified'
+        )  
+
+        # Add value labels for each segment
+        fig4.update_traces(
+            texttemplate='%{y:,.0f}',
+            textposition='inside',
+            textfont_size=10,
+            marker_line_width=0.5,
+            marker_line_color='white'
         )
+        return [html.Div(dcc.Graph(figure=fig), style=graph_style) for fig in [fig1, fig2, fig3, fig4]]
 
-        return [
-            html.Div(children=[dcc.Graph(figure=fig1)], style=graph_style),
-            html.Div(children=[dcc.Graph(figure=fig2)], style=graph_style),
-            html.Div(children=[dcc.Graph(figure=fig3)], style=graph_style),
-            html.Div(children=[dcc.Graph(figure=fig4)], style=graph_style)
-        ]
-
-#Create and display graphs for Yearly Report Statistics
- # Yearly Statistic Report Plots
-    # Check for Yearly Statistics.                             
     elif selected_statistics == 'Yearly Statistics':
         if not selected_year:
-            return html.Div("Please select a year to view Yearly Statistics.", style=graph_style)
-
-        # Filter data for the selected year
+            return html.Div("Please select a year", style=graph_style)
+            
         yearly_data = data[data['Year'] == selected_year]
-
+        
+        # Chart 1: Yearly trend 
         yas = data.groupby('Year')['Automobile_Sales'].mean().reset_index()
-        fig1 = px.line(yas, x='Year', y='Automobile_Sales', title="Yearly Sales Over Time")
-        fig1.update_layout(title={'x': 0.5}, plot_bgcolor='#f0f4f8', paper_bgcolor='#ffffff')
+        fig1 = px.line(
+            yas,
+            x='Year',
+            y='Automobile_Sales',
+            title=f"<b>Automobile Sales Trend</b>",
+            color_discrete_sequence=['#FF6B6B']
+        )
+        fig1.update_layout(**COMMON_LAYOUT, height=400)
+        fig1.update_traces(line_width=3, hovertemplate='%{y:,.0f} units')
 
-        mas = data.groupby('Month')['Automobile_Sales'].sum().reset_index()
-        fig2 = px.line(mas, x='Month', y='Automobile_Sales', title=f"Monthly Sales in {selected_year}")
-        fig2.update_layout(title={'x': 0.5}, plot_bgcolor='#f0f4f8', paper_bgcolor='#ffffff')
-     
+        # Chart 2: Monthly sales
+        mas = yearly_data.groupby('Month')['Automobile_Sales'].sum().reset_index()
+        fig2 = px.line(
+            mas,
+            x='Month',
+            y='Automobile_Sales',
+            title=f"<b>Monthly Sales ({selected_year})</b>",
+            color_discrete_sequence=['#4ECDC4']
+        )
+        fig2.update_layout(**COMMON_LAYOUT, height=400)
+        fig2.update_traces(line_width=3, hovertemplate='%{y:,.0f} units')
+
+        # Chart 3: Average sales per vehicle
         avr_vdata = yearly_data.groupby('Vehicle_Type')['Automobile_Sales'].mean().reset_index()
-        fig3 = px.bar(avr_vdata, x='Vehicle_Type', y='Automobile_Sales', title=f"Avg Sales by Vehicle Type in {selected_year}")
-        fig3.update_layout(title={'x': 0.5}, plot_bgcolor='#f0f4f8', paper_bgcolor='#ffffff')
+        fig3 = px.bar(
+            avr_vdata,
+            x='Vehicle_Type',
+            y='Automobile_Sales',
+            title=f"<b>Average Sales by Vehicle Type ({selected_year})</b>",
+            color='Vehicle_Type',
+            color_discrete_sequence=px.colors.qualitative.Pastel
+        )
+        fig3.update_layout(**COMMON_LAYOUT, showlegend=False, height=400)
+        fig3.update_traces(
+            hovertemplate='%{y:,.0f} units',
+            texttemplate='%{y:,.0f}',
+            textposition='outside',
+            textfont_size=12
+        )
 
+        # Chart 4: 3D Pie Chart
         exp_data = yearly_data.groupby('Vehicle_Type')['Advertising_Expenditure'].sum().reset_index()
-        fig4 = px.pie(exp_data, values='Advertising_Expenditure', names='Vehicle_Type', title=f"Ad Expenditure by Vehicle in {selected_year}")
-        fig4.update_layout(title={'x': 0.5}, paper_bgcolor='#ffffff')
+        fig4 = px.pie(
+            exp_data,
+            values='Advertising_Expenditure',
+            names='Vehicle_Type',
+            title=f"<b>Advertising Expenditure by Vehicle</b>",
+            hole=0.3,
+            color_discrete_sequence=px.colors.qualitative.Pastel
+        )
+        fig4.update_layout(**COMMON_LAYOUT, height=400)
+        fig4.update_traces(
+            textposition='inside',
+            textinfo='percent+label',
+            hovertemplate='%{label}: $%{value:,.0f}',
+            pull=[0.1, 0, 0, 0],
+            rotation=45
+        )
 
-#Returning the graphs for displaying Yearly data
-        return [
-            html.Div(dcc.Graph(figure=fig1)), 
-            html.Div(dcc.Graph(figure=fig2)),
-            html.Div(dcc.Graph(figure=fig3)),
-            html.Div(dcc.Graph(figure=fig4))
-        ]
+        return [html.Div(dcc.Graph(figure=fig), style=graph_style) for fig in [fig1, fig2, fig3, fig4]]  
     
     return html.Div("Select a report type from the dropdown", style=graph_style)
 
