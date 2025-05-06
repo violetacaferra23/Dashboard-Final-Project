@@ -5,7 +5,7 @@ Course: Data Visualization with Python (IBM/Coursera)
 Objective: Analyze historical automobile sales trends during recession periods and demonstrate dashboarding skills using Python.
 
 
-# 🚀 Project Overview
+🚀 Project Overview
 
 This interactive dashboard provides insights into XYZAutomotives' sales performance, featuring:
 
@@ -14,7 +14,7 @@ This interactive dashboard provides insights into XYZAutomotives' sales performa
 - Recession Period Analysis
   
 
-# Built with:
+Built with:
 
 Python + Dash + Plotly + Pandas
 
