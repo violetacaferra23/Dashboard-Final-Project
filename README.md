@@ -145,31 +145,5 @@ Alertar cuando:
 python
 (unemployment_rate > 6.5%) & (consumer_confidence < 45)
 
-python
-##### Cálculo en Pandas:
-resilience_score = df.groupby(['Year', 'Vehicle_Type'])['Automobile_Sales'].mean().unstack().pct_change().mean()
-SUV: +7.3% anual post-crisis (vs +3.1% promedio histórico)
-
-Eléctricos: Crecimiento sostenido del 12% anual desde 2015
-
-Efecto desempleo: Correlación negativa del -0.89 para vehículos premium (vs -0.32 en económicos)
-
-(Gráfico "Unemployment Effect")
-
-## 📌 Strategic Recommendations
-Mitigar riesgos:
-
-Asignar +15% de presupuesto a SUV/compactos previo a indicadores de recesión.
-
-Oportunidades:
-
-Inversión en eléctricos en crisis (ventas crecieron un 9% en 2020 vs -28% en combustibles).
-
-Monitoreo:
-
-Alertar cuando:
-
-python
-(unemployment_rate > 6.5%) & (consumer_confidence < 45)
 
 ** Developed as final project for Coursera's Data Visualization with Python course - IBM Professional Certificate **
