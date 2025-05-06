@@ -23,23 +23,23 @@ Python + Dash + Plotly + Pandas
 
 1️⃣ Yearly Statistics Report
 
-  📈 Yearly sales trend (1980-2013)
+    📈 Yearly sales trend (1980-2013)
 
-  🗓️ Monthly sales for selected year
+     🗓️ Monthly sales for selected year
 
-  🚗 Average sales by vehicle type
+    🚗 Average sales by vehicle type
 
-  💰 Advertising expenditure breakdown
+    💰 Advertising expenditure breakdown
 
 2️⃣ Recession Analysis Report
 
-  📉 Sales fluctuation during recessions
+    📉 Sales fluctuation during recessions
 
-  🔍 Vehicle-type performance
+    🔍 Vehicle-type performance
 
-  📊 Unemployment rate impact
+    📊 Unemployment rate impact
 
-  💸 Advertising spend allocation
+    💸 Advertising spend allocation
 
 
 ## 🛠️ Technical Implementation
@@ -85,5 +85,7 @@ SUV sales showed most resilience during recessions
 Advertising spend shifted to economy vehicles in downturns
 
 2008 recession had most severe impact on executive cars
+
+
 
 Developed as final project for Coursera's Data Visualization with Python course - IBM Professional Certificate
