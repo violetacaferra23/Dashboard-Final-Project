@@ -128,19 +128,6 @@ Lecciones para estrategias futuras:
 -    Correlación negativa del -0.89 para vehículos premium (vs -0.32 en económicos)
      (Gráfico "Unemployment Effect"
 
-python
-##### Cálculo en Pandas:
-resilience_score = df.groupby(['Year', 'Vehicle_Type'])['Automobile_Sales'].mean().unstack().pct_change().mean()
-
-SUV: +7.3% anual post-crisis (vs +3.1% promedio histórico)
-
-Eléctricos: Crecimiento sostenido del 12% anual desde 2015
-
-Efecto desempleo:Correlación negativa del -0.89 para vehículos premium (vs -0.32 en económicos)
-
-(Gráfico "Unemployment Effect")
-
-
 ## 📌 Strategic Recommendations
 
 #### 1. Mitigar riesgos:
